@@ -1,109 +1,335 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT Department — Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Sarabun:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    .inputtext {
-      width: 100%;
-      margin: 5px 0;
-      padding: 10px;
-      border: 2px solid #000;
-      border-radius: 20px;
-      box-sizing: border-box;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #F50602;
+      --red-light: #fff0f0;
+      --bg: #f4f4f6;
+      --surface: #ffffff;
+      --surface2: #f9f9fb;
+      --border: rgba(0,0,0,0.08);
+      --border-focus: rgba(245,6,2,0.4);
+      --text: #111114;
+      --muted: #8a8a95;
+      --muted2: #bcbcc5;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Sarabun', sans-serif;
     }
-    .button {
-      width: 100%;
-      margin: 5px 0;
-      padding: 10px;
-      background-color: #F72307;
-      border: 2px solid #000;
-      border-radius: 20px;
-      color: white;
-      text-transform: uppercase;
-      cursor: pointer;
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
     }
-    #msg {
-      color: red;
-      font-weight: bold;
-      margin: 10px 0;
-    }
+
     body {
-      font-family: Arial, sans-serif;
       display: flex;
-      justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
-      background: #f0f0f0;
+      justify-content: center;
+      min-height: 100vh;
     }
-    .container {
-      width: 300px;
-      text-align: center;
+
+    /* subtle dot grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(0,0,0,0.08) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
     }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 380px;
+      padding: 20px;
+      animation: fadeUp .45s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* top bar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .logo-box {
+      width: 38px;
+      height: 38px;
+      background: var(--red);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(245,6,2,0.25);
+    }
+
+    .logo-box svg {
+      width: 19px; height: 19px;
+      stroke: #fff; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .dept-label { display: flex; flex-direction: column; gap: 1px; }
+    .dept-label .name {
+      font-family: var(--mono); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; color: var(--text);
+    }
+    .dept-label .sub {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.06em; color: var(--muted);
+    }
+
+    .status-dot {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 5px;
+      font-family: var(--mono); font-size: 10px; color: var(--muted);
+    }
+    .status-dot::before {
+      content: '';
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #16a34a;
+      box-shadow: 0 0 5px rgba(22,163,74,0.5);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+    /* heading */
+    .heading { margin-bottom: 8px; }
+    .heading h1 {
+      font-family: var(--mono); font-size: 24px; font-weight: 700;
+      letter-spacing: -0.02em; color: var(--text); line-height: 1.15;
+    }
+    .heading h1 span { color: var(--red); }
+    .heading p { font-size: 13px; color: var(--muted); margin-top: 6px; font-weight: 300; }
+
+    .divider { height: 1px; background: var(--border); margin: 22px 0; }
+
+    /* card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    }
+
+    /* field */
+    .field { margin-bottom: 18px; }
+
+    .field label {
+      display: flex; align-items: center; gap: 5px;
+      font-family: var(--mono); font-size: 10px; font-weight: 500;
+      letter-spacing: 0.09em; color: var(--muted); margin-bottom: 7px;
+    }
+    .field label svg {
+      width: 11px; height: 11px;
+      stroke: var(--muted2); fill: none; stroke-width: 2; stroke-linecap: round;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: var(--mono); font-size: 13px; font-weight: 400;
+      letter-spacing: 0.03em;
+      outline: none;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .input-wrap input::placeholder { color: var(--muted2); }
+    .input-wrap input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(245,6,2,0.08);
+    }
+
+    /* message */
+    #msg {
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.03em;
+      min-height: 16px; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 5px;
+    }
+
+    /* button */
+    .btn {
+      width: 100%; padding: 11px;
+      background: var(--red); border: none; border-radius: 8px;
+      color: #fff; font-family: var(--mono); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.1em; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background .15s, transform .1s, opacity .15s;
+      box-shadow: 0 3px 10px rgba(245,6,2,0.3);
+    }
+    .btn:hover { background: #d40400; }
+    .btn:active { transform: scale(0.99); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* prompt */
+    .prompt-line {
+      font-family: var(--mono); font-size: 10px; color: var(--muted2);
+      margin-top: 14px; letter-spacing: 0.03em;
+    }
+    .cursor {
+      display: inline-block; width: 6px; height: 11px;
+      background: var(--red); margin-left: 2px; vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* footer */
+    .footer {
+      margin-top: 18px;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      font-family: var(--mono); font-size: 10px; color: var(--muted2); letter-spacing: 0.03em;
+    }
+    .footer svg { width: 11px; height: 11px; stroke: var(--muted2); fill: none; stroke-width: 2; stroke-linecap: round; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2 style="color:#F50602;">เฉพาะพนักงานแผนกเทคโนโลยีสารสนเทศ</h2>
-    <form name="myform" onsubmit="return false;">
-      <input type="text" name="uname" class="inputtext" placeholder="รหัสพนักงาน"><br>
-      <input type="password" name="pass" class="inputtext" placeholder="วันที่เริ่มงาน"><br>
-      <div id="msg"></div>
-      <input type="button" class="button" value="Login" onclick="login()">
-    </form>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="logo-box">
+      <svg viewBox="0 0 24 24">
+        <polyline points="4 17 10 11 4 5"></polyline>
+        <line x1="12" y1="19" x2="20" y2="19"></line>
+      </svg>
+    </div>
+    <div class="dept-label">
+      <span class="name">IT DEPARTMENT</span>
+      <span class="sub">INTERNAL SYSTEM</span>
+    </div>
+    <div class="status-dot">ONLINE</div>
   </div>
 
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycoj2fvFMl9QS52dzZoWDXLvVddmmuo4ggsuA7UQeCG243AN4J4_r3E4e1hc2JgQFlzw/exec";
-    const DASHBOARD_URL = "Asset-itusers.html";
+  <div class="heading">
+    <h1>SECURE<span>_</span>LOGIN</h1>
+    <p>เฉพาะพนักงานแผนกเทคโนโลยีสารสนเทศ</p>
+  </div>
 
-    function login() {
-      var user = document.forms["myform"]["uname"].value;
-      var pass = document.forms["myform"]["pass"].value;
+  <div class="divider"></div>
 
-      if(user === "" || pass === "") {
-        document.getElementById("msg").innerHTML = "กรุณากรอก username และ password";
-        return;
+  <div class="card">
+
+    <div class="field">
+      <label>
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="8" x2="11" y2="8"/></svg>
+        รหัสพนักงาน
+      </label>
+      <div class="input-wrap">
+        <input type="text" id="uname" placeholder="EMP-XXXXX" autocomplete="username" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label>
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        วันที่เริ่มงาน (รหัสผ่าน)
+      </label>
+      <div class="input-wrap">
+        <input type="password" id="pass" placeholder="DD/MM/YYYY" autocomplete="current-password" />
+      </div>
+    </div>
+
+    <div id="msg"></div>
+
+    <button class="btn" id="loginBtn" onclick="login()">
+      <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      AUTHENTICATE
+    </button>
+
+    <div class="prompt-line">
+      <span style="color:var(--red);">$</span> auth.verify --dept=it<span class="cursor"></span>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Session หมดอายุอัตโนมัติใน 30 นาที
+  </div>
+
+</div>
+
+<footer style="position:fixed; bottom:0; left:0; right:0; padding:12px 20px; background:var(--surface); border-top:1px solid var(--border); text-align:center;">
+  <p style="font-family:var(--sans); font-size:12px; color:var(--muted); font-weight:300;">
+    พัฒนาโดย <strong style="font-weight:500; color:var(--text);">Sarawut.C</strong>
+  </p>
+  <p style="font-family:var(--mono); font-size:10px; color:var(--muted2); letter-spacing:0.04em; margin-top:3px;">
+    สำหรับใช้ภายในองค์กรเท่านั้น
+  </p>
+</footer>
+
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycoj2fvFMl9QS52dzZoWDXLvVddmmuo4ggsuA7UQeCG243AN4J4_r3E4e1hc2JgQFlzw/exec";
+  const DASHBOARD_URL = "Asset-itusers.html";
+
+  function setMsg(text, type) {
+    const el = document.getElementById("msg");
+    const colors = { error: "#dc2626", info: "#8a8a95", success: "#16a34a" };
+    el.style.color = colors[type] || colors.error;
+    el.textContent = text ? (type === "error" ? "✗ " : type === "success" ? "✓ " : "→ ") + text : "";
+  }
+
+  function login() {
+    const user = document.getElementById("uname").value.trim();
+    const pass = document.getElementById("pass").value.trim();
+    if (!user || !pass) { setMsg("กรุณากรอกรหัสพนักงานและวันที่เริ่มงาน", "error"); return; }
+
+    const btn = document.getElementById("loginBtn");
+    btn.disabled = true;
+    setMsg("กำลังตรวจสอบสิทธิ์...", "info");
+
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      body: new URLSearchParams({ uname: user, pass: pass, action: "login" })
+    })
+    .then(r => r.text())
+    .then(txt => {
+      let data;
+      try { data = JSON.parse(txt); } catch(e) { setMsg("รูปแบบข้อมูลผิดพลาด", "error"); btn.disabled = false; return; }
+      if (data.status === "success" && data.userStatus === "Online") {
+        setMsg("เข้าสู่ระบบสำเร็จ กำลังโหลด...", "success");
+        localStorage.setItem("username", user);
+        localStorage.setItem("authToken", user);
+        localStorage.setItem("expireTime", Date.now() + 1000 * 60 * 30);
+        setTimeout(() => window.open(DASHBOARD_URL, "_self"), 800);
+      } else {
+        setMsg("รหัสพนักงานหรือรหัสผ่านไม่ถูกต้อง", "error");
+        btn.disabled = false;
       }
-      document.getElementById("msg").style.color = "blue";
-      document.getElementById("msg").innerHTML = "กำลังนำท่านเข้าสู่ระบบ...";
+    })
+    .catch(() => {
+      setMsg("เชื่อมต่อไม่ได้ กรุณาลองใหม่", "error");
+      btn.disabled = false;
+    });
+  }
 
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: new URLSearchParams({
-          "uname": user,
-          "pass": pass,
-          "action": "login"
-        })
-      })
-      .then(res => res.text())
-     .then(txt => {
-        console.log("Raw response:", txt);
-        let data;
-        try {
-          data = JSON.parse(txt);
-        } catch(e) {
-          console.error("ไม่ใช่ JSON ที่ถูกต้อง:", e);
-         return;
-       }
-         console.log("Login API response:", data);
-
-
-        if(data.status === "success" && data.userStatus === "Online") {
-          localStorage.setItem("username", user);
-          localStorage.setItem("authToken", user); // ✅ ใช้ username เป็น token
-          localStorage.setItem("expireTime", Date.now() + 1000*60*30); // 30 นาที
-          window.open(DASHBOARD_URL, "_self");
-        } else {
-          document.getElementById("msg").innerHTML = "ชื่อผู้ใช้ หรือรหัสผ่านไม่ถูกต้อง";
-        }
-      })
-      .catch(err => {
-        document.getElementById("msg").innerHTML = "เกิดข้อผิดพลาด กรุณาลองใหม่";
-        console.error("Login API error:", err);
-      });
-    }
-  </script>
+  document.addEventListener("keydown", e => { if (e.key === "Enter") login(); });
+</script>
 </body>
 </html>
